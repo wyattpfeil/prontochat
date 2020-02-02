@@ -30,11 +30,6 @@
         margin: 0 auto;
         display: block;
       }
-      #sendButton{
-
-   
-        
-      }
       #messages{
         /*width: 100%;*/
         position: absolute;
@@ -48,12 +43,27 @@
         overflow: auto;
         -webkit-overflow-scrolling: touch;
       }
+      #inviteButton {
+        position: fixed;
+        top: 2%;
+        right: 2%;
+        z-index:99;
+      }
+      #qrCode {
+        position: fixed;
+        top: 10%;
+        right: 2%;
+        z-index:100;
+        display: none
+      }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
   </head>
   <body>
+    <button class="btn btn-primary" id="inviteButton" type="button">Invite Friends</button>
+    <img src="" id="qrCode"></img>
     <ul class="list-group" id="messages">
       <li class="list-group-item" id="receivedMessage1"></li>
     </ul>
@@ -81,11 +91,25 @@
     }
     var roomId = getRoomId()
     var username = getUsername()
-    if(username == null) {
+    document.getElementById("qrCode").src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://prontochat.glitch.me/join?roomId=" + roomId
+    /*if(username == null) {
       window.location.replace(
         "http://prontochat.glitch.me/join?roomId=" + roomId);
-    }
+    }*/
     console.log(roomId)
+    var qrCodeVisible = false
+    document.getElementById("inviteButton").onclick = function(){
+      if(qrCodeVisible == false) {
+        document.getElementById("qrCode").style = "position: fixed; top: 10%; right: 2%; z-index:100; display:block;"
+        document.getElementById("inviteButton").innerText = "Hide Code"
+        qrCodeVisible = true
+      } else {
+        document.getElementById("qrCode").style = "position: fixed; top: 10%; right: 2%; z-index:100; display:none;"
+        document.getElementById("inviteButton").innerText = "Invite Friends"
+        qrCodeVisible = false
+      }
+      
+    }
     function createSocket() {
       var exampleSocket = new WebSocket("wss://prontochat.glitch.me");
       exampleSocket.onclose = function(event) {
