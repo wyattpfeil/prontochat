@@ -4,9 +4,7 @@ let app = express();
 const WebSocket = require('ws');
 // Let's create the regular HTTP request and response
 app.get('/', function(req, res) {
-  console.log('Get index');
-  fs.sendFile(__dirname + './startScreen.html')
-  .pipe();
+  res.redirect("https://prontochat.glitch.me/join")
 });
 app.get('/join', function(req, res) {
   res.sendFile(__dirname + '/startScreen.html');
