@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ProntoChat</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    />
+    <style>
+      #startForm {
+        position: relative;
+        width: 20%;
+        margin: auto;
+        margin-top: 10%;
+      }
+      #nickname {
+        width: 100%;
+        margin: auto;
+        text-align: center;
+        background:rgba(255,255,255,0.4);
+        border: rgba(255,255,255,0.3);
+      }
+      #roomId {
+        width: 100%;
+        margin: auto;
+        margin-top: 5%;
+        text-align: center;
+        background:rgba(255,255,255,0.4);
+        border: rgba(255,255,255,0.3);
+      }
+      #joinButton {
+        margin: auto;
+        margin-top: 5%;
+        display: block;
+        background:rgba(138, 138, 138, 0.4);
+        border: rgba(186, 186, 186, 0.3);
+        color: rgba(255, 255, 255, 0.8)
+      }
+      #myVideo {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+
+        object-fit: fill;
+        
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <video autoplay muted loop id="myVideo">
+        <source src="https://cdn.glitch.com/c7c62100-ca63-464a-9633-a4740e45451f%2FArrival_4K_Motion_Background_Loop.mp4?v=1580681441403" type="video/mp4">
+      </video>
+    <form id="startForm">
+      <input
+        type="text"
+        class="form-control"
+        id="nickname"
+        placeholder="Name"
+      />
+      <input
+        type="text"
+        class="form-control"
+        id="roomId"
+        placeholder="Room#"
+      />
+      <button class="btn btn-primary" id="joinButton" type="button">
+        Join
+      </button>
+    </form>
+  </body>
+  <script>
+      var vid = document.getElementById("myVideo");
+      vid.playbackRate = 0.75;
+    function getRoomId() {
+      var vars = {};
+      var parts = window.location.href.replace(
+        /[?&]+([^=&]+)=([^&]*)/gi,
+        function(m, key, value) {
+          vars[key] = value;
+        }
+      );
+      return vars.roomId;
+    }
+    var roomId = getRoomId()
+    console.log(roomId)
+    if(roomId == null) {
+        console.log("Its null")
+    } else {
+        document.getElementById("roomId").value = roomId
+        document.getElementById("roomId").style = "display: none;"
+    }
+    document.getElementById("joinButton").onclick = function() {
+      var roomId = document.getElementById("roomId").value;
+      var nickname = document.getElementById("nickname").value;
+      console.log(roomId);
+      console.log(nickname);
+      window.location.replace(
+        "http://prontochat.glitch.me/room?roomId=" +
+          roomId +
+          "&username=" +
+          nickname
+      );
+    };
+  </script>
+</html>
