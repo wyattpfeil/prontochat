@@ -97,7 +97,7 @@
     <label id="roomCode">Room ID: </label>
     <ul class="list-group" id="messages">
       <li class="list-group-item" id="receivedMessage1">
-        <img id="receivedMessage1Image" width="10%" src="">
+        <img id="receivedMessage1Image" width="10%" src="" style="margin-left: 1%;">
       </li>
     </ul>
     <form class="form-inline" id="messageForm">
@@ -122,16 +122,23 @@
   <script>
     function readURL(input) {
       if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          $("#uploadImageDisplay")
-            .attr("src", e.target.result)
-            .width(150)
-            .height(200);
-          var base64Img = e.target.result
-          messageBox.value = "Uploaded Image"
-        };
-        reader.readAsDataURL(input.files[0]);
+        if((input.files[0].type).includes("image")){
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            $("#uploadImageDisplay")
+              .attr("src", e.target.result)
+              .width(150)
+              .height(200);
+            var base64Img = e.target.result
+            messageBox.value = "Uploaded Image"
+            $("#sendButton").trigger("click");
+            messageBox.value = ""
+          };
+          reader.readAsDataURL(input.files[0]);
+          console.log(input.files[0].type)
+        } else {
+          alert("Please upload an image!")
+        }
       }
     }
     $("#uploadButton").click(function(e) {
@@ -213,12 +220,15 @@
           var cloneMessage = document
             .getElementById("receivedMessage1")
             .cloneNode(true);
-          cloneMessage.innerText = userWhoSent;
+          cloneMessage.innerText = userWhoSent + ": ";
           var messages = document.getElementById("messages");
           var numberOfMessages = messages.childElementCount;
           cloneMessage.id = "receivedMessage" + numberOfMessages + 1;
           var cloneImage = document.getElementById("receivedMessage1Image").cloneNode(true)
           cloneImage.src = imageSent
+          cloneImage.onclick = function() {
+            cloneImage.requestFullscreen()
+          }
           cloneMessage.appendChild(cloneImage)
           messages.appendChild(cloneMessage);
           messages.scrollTop = messages.scrollHeight;
