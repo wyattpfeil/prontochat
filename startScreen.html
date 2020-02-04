@@ -43,9 +43,19 @@
         right: 0;
         bottom: 0;
 
-        object-fit: fill;
+        object-fit: cover;
         
         }
+      body {
+        height: 100%;
+        
+        background: #ff71ea;
+        background: -webkit-linear-gradient(#ff71ea, #ffd2f4);
+        background:    -moz-linear-gradient(#ff71ea, #ffd2f4);
+        background:         linear-gradient(#ff71ea, #ffd2f4);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
@@ -76,6 +86,19 @@
   <script>
       var vid = document.getElementById("myVideo");
       vid.playbackRate = 0.75;
+      function getMobile() {
+        var vars = {};
+        var parts = window.location.href.replace(
+          /[?&]+([^=&]+)=([^&]*)/gi,
+          function(m, key, value) {
+            vars[key] = value;
+          }
+        );
+        return vars.mobile;
+      }
+      if(getMobile() == "true") {
+        //vid.remove()
+      }
     function getRoomId() {
       var vars = {};
       var parts = window.location.href.replace(
