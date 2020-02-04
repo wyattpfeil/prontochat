@@ -35,6 +35,22 @@ wss.on('connection', function connection(ws) {
       }
       console.log(messageContent)
       messageToSendToClients = "received|" + messageContent + "|" + roomId
+    } else if (messageType == "image") {
+      var image = splitMessage[1]
+      var roomId = splitMessage[2]
+      var username = splitMessage[3]
+      const path = './rooms/' + roomId + ".txt"
+      try {
+        if (fs.existsSync(path)) {
+          //file exists
+          fs.appendFileSync(path, "\n" + "image|" + image + "|" + username)
+        } else {
+          //file doesn't exist
+        }
+      } catch(err) {
+        console.error(err)
+      }
+      messageToSendToClients = "receivedImage|" + image + "|" + roomId + "|" + username
     }
     connections.forEach(function(socket, index){
       socket.send(messageToSendToClients)

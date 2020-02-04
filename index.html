@@ -11,9 +11,16 @@
     <title>ProntoChat</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    />
     <style>
-      #messageForm{
+      #messageForm {
         width: 100%;
         position: fixed;
         bottom: 2.5%;
@@ -22,15 +29,15 @@
         left: 0;
         right: 0;
       }
-      #messageBox{
+      #messageBox {
         width: 100%;
       }
-      #messageBoxFormGroup{
-        width:80%;
+      #messageBoxFormGroup {
+        width: 70%;
         margin: 0 auto;
         display: block;
       }
-      #messages{
+      #messages {
         /*width: 100%;*/
         position: absolute;
         top: 0%;
@@ -38,8 +45,8 @@
         /* And if you want the div to be full-width: */
         left: 0;
         right: 0;
-        width:100%;
-        height:90%;
+        width: 100%;
+        height: 90%;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
       }
@@ -47,20 +54,32 @@
         position: fixed;
         top: 2%;
         right: 2%;
-        z-index:99;
+        z-index: 99;
       }
       #qrCode {
         position: fixed;
         top: 10%;
         right: 2%;
-        z-index:100;
-        display: none
+        z-index: 100;
+        display: none;
       }
       #roomCode {
         position: fixed;
         top: 0;
         left: 0;
-        z-index:101;
+        z-index: 101;
+      }
+      #imageInput {
+        position: fixed;
+        top: 0;
+        left: 40%;
+        z-index: 101;
+        opacity: 0;
+      }
+      #uploadButton {
+        background: transparent;
+        color: rgb(60, 60, 60);
+        border: rgba(0, 0, 0, 0);
       }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -68,56 +87,103 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
   </head>
   <body>
-    <button class="btn btn-primary" id="inviteButton" type="button">Invite Friends</button>
-    <img src="" id="qrCode"></img>
-    <label id = "roomCode">Room ID: </label>
+    <button class="btn btn-primary" id="inviteButton" type="button">
+      Invite Friends
+    </button>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png"
+      id="qrCode"
+    />
+    <label id="roomCode">Room ID: </label>
     <ul class="list-group" id="messages">
-      <li class="list-group-item" id="receivedMessage1"></li>
+      <li class="list-group-item" id="receivedMessage1">
+        <img id="receivedMessage1Image" width="10%" src="">
+      </li>
     </ul>
     <form class="form-inline" id="messageForm">
+      <button class="btn btn-primary" id="uploadButton" type="button">
+        <i class="fas fa-file-upload fa-2x"></i>
+      </button>
       <div class="form-group mx-sm-3" id="messageBoxFormGroup">
-        <input type="text" class="form-control" id="messageBox" placeholder="Message">
+        <input
+          type="text"
+          class="form-control"
+          id="messageBox"
+          placeholder="Message"
+        />
       </div>
-      <button class="btn btn-primary" id="sendButton" type="button">Send</button>
+      <button class="btn btn-primary" id="sendButton" type="button">
+        Send
+      </button>
     </form>
+    <input id="imageInput" type="file" onchange="readURL(this);" />
+    <img id="uploadImageDisplay" src="#" alt="your image" />
   </body>
   <script>
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          $("#uploadImageDisplay")
+            .attr("src", e.target.result)
+            .width(150)
+            .height(200);
+          var base64Img = e.target.result
+          messageBox.value = "Uploaded Image"
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    $("#uploadButton").click(function(e) {
+      e.preventDefault();
+      $("#imageInput").trigger("click");
+    });
     function getRoomId() {
       var vars = {};
-      var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+      var parts = window.location.href.replace(
+        /[?&]+([^=&]+)=([^&]*)/gi,
+        function(m, key, value) {
           vars[key] = value;
-      });
+        }
+      );
       return vars.roomId;
     }
     function getUsername() {
       var vars = {};
-      var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+      var parts = window.location.href.replace(
+        /[?&]+([^=&]+)=([^&]*)/gi,
+        function(m, key, value) {
           vars[key] = value;
-      });
+        }
+      );
       return vars.username;
     }
-    var roomId = getRoomId()
-    var username = getUsername()
-    document.getElementById("roomCode").innerText = "Room ID: " + roomId
-    document.getElementById("qrCode").src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://prontochat.glitch.me/join?roomId=" + roomId
-    if(username == null) {
+    var roomId = getRoomId();
+    var username = getUsername();
+    document.getElementById("roomCode").innerText = "Room ID: " + roomId;
+    document.getElementById("qrCode").src =
+      "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://prontochat.glitch.me/join?roomId=" +
+      roomId;
+    if (username == null) {
       window.location.replace(
-        "http://prontochat.glitch.me/join?roomId=" + roomId);
+        "http://prontochat.glitch.me/join?roomId=" + roomId
+      );
     }
-    console.log(roomId)
-    var qrCodeVisible = false
-    document.getElementById("inviteButton").onclick = function(){
-      if(qrCodeVisible == false) {
-        document.getElementById("qrCode").style = "position: fixed; top: 10%; right: 2%; z-index:100; display:block;"
-        document.getElementById("inviteButton").innerText = "Hide Code"
-        qrCodeVisible = true
+    console.log(roomId);
+    var qrCodeVisible = false;
+    document.getElementById("inviteButton").onclick = function() {
+      if (qrCodeVisible == false) {
+        document.getElementById("qrCode").style =
+          "position: fixed; top: 10%; right: 2%; z-index:100; display:block;";
+        document.getElementById("inviteButton").innerText = "Hide Code";
+        qrCodeVisible = true;
       } else {
-        document.getElementById("qrCode").style = "position: fixed; top: 10%; right: 2%; z-index:100; display:none;"
-        document.getElementById("inviteButton").innerText = "Invite Friends"
-        qrCodeVisible = false
+        document.getElementById("qrCode").style =
+          "position: fixed; top: 10%; right: 2%; z-index:100; display:none;";
+        document.getElementById("inviteButton").innerText = "Invite Friends";
+        qrCodeVisible = false;
       }
-      
-    }
+    };
     function createSocket() {
       var exampleSocket = new WebSocket("wss://prontochat.glitch.me");
       exampleSocket.onclose = function(event) {
@@ -127,55 +193,101 @@
       exampleSocket.onopen = function(event) {
         console.log("Opened!");
         function sendMessage(message) {
-          exampleSocket.send("message|" + message + "|" + roomId)
+          exampleSocket.send("message|" + message + "|" + roomId);
+        }
+        function sendImage(image) {
+          exampleSocket.send("image|" + image + "|" + roomId + "|" + username)
         }
         function displayMessage(message) {
-          var cloneMessage = document.getElementById("receivedMessage1").cloneNode(true)
-          cloneMessage.innerText = message
-          var messages = document.getElementById("messages")
-          var numberOfMessages = messages.childElementCount
-          cloneMessage.id = "receivedMessage" + numberOfMessages + 1
-          messages.appendChild(cloneMessage)
-          messages.scrollTop = messages.scrollHeight
+          var cloneMessage = document
+            .getElementById("receivedMessage1")
+            .cloneNode(true);
+          cloneMessage.innerText = message;
+          var messages = document.getElementById("messages");
+          var numberOfMessages = messages.childElementCount;
+          cloneMessage.id = "receivedMessage" + numberOfMessages + 1;
+          messages.appendChild(cloneMessage);
+          messages.scrollTop = messages.scrollHeight;
         }
-        document.getElementById('messageForm').addEventListener('submit', function(e) {
-          var messageBoxText = document.getElementById("messageBox").value
-          if(messageBoxText != "") {
-            document.getElementById("messageBox").value = ""
-            console.log("Sent message " + messageBoxText)
-            sendMessage(username + ": " + messageBoxText)
+        function displayImage(userWhoSent, imageSent){
+          var cloneMessage = document
+            .getElementById("receivedMessage1")
+            .cloneNode(true);
+          cloneMessage.innerText = userWhoSent;
+          var messages = document.getElementById("messages");
+          var numberOfMessages = messages.childElementCount;
+          cloneMessage.id = "receivedMessage" + numberOfMessages + 1;
+          var cloneImage = document.getElementById("receivedMessage1Image").cloneNode(true)
+          cloneImage.src = imageSent
+          cloneMessage.appendChild(cloneImage)
+          messages.appendChild(cloneMessage);
+          messages.scrollTop = messages.scrollHeight;
+        }
+        document.getElementById("messageForm").addEventListener(
+          "submit",
+          function(e) {
+            var messageBoxText = document.getElementById("messageBox").value;
+            if (messageBoxText != "") {
+              document.getElementById("messageBox").value = "";
+              console.log("Sent message " + messageBoxText);
+              sendMessage(username + ": " + messageBoxText);
+            }
+            e.preventDefault();
+          },
+          false
+        );
+        document.getElementById("sendButton").onclick = function(e) {
+          var messageBoxText = document.getElementById("messageBox").value;
+          if(messageBoxText == "Uploaded Image"){
+            var imgSource = document.getElementById("uploadImageDisplay").src
+            console.log(imgSource)
+            sendImage(imgSource)
+          } else {
+            if (messageBoxText != "") {
+              document.getElementById("messageBox").value = "";
+              console.log("Sent message " + messageBoxText);
+              sendMessage(username + ": " + messageBoxText);
+            }
           }
           e.preventDefault();
-        }, false);
-        document.getElementById("sendButton").onclick = function(){
-          var messageBoxText = document.getElementById("messageBox").value
-          if(messageBoxText != "") {
-            document.getElementById("messageBox").value = ""
-            console.log("Sent message " + messageBoxText)
-            sendMessage(username + ": " + messageBoxText)
-          }
-          e.preventDefault();
-        }
+        };
         for (i = 0; i < 50; i++) {
-          displayMessage(" ")
+          displayMessage(" ");
         }
-        $.get( "http://prontochat.glitch.me/getRoomMessages?roomId=" + roomId, function( data ) {
-          var previousMessages = data.split("\n")
-          previousMessages.forEach(message => {
-            displayMessage(message)
-          });
-        });
+        $.get(
+          "http://prontochat.glitch.me/getRoomMessages?roomId=" + roomId,
+          function(data) {
+            var previousMessages = data.split("\n");
+            previousMessages.forEach(message => {
+              var splitMessage = message.split("|")
+              if(splitMessage[1]) {
+                if(splitMessage[0] == "image") {
+                  displayImage(splitMessage[2], splitMessage[1])
+                }
+              } else {
+                displayMessage(message);
+              }
+            });
+          }
+        );
         exampleSocket.onmessage = function(event) {
-          var messageData = event.data
-          var splitMessageData = messageData.split("|")
-          if(splitMessageData[0] == "received") {
+          var messageData = event.data;
+          var splitMessageData = messageData.split("|");
+          if (splitMessageData[0] == "received") {
+            var destinationRoom = splitMessageData[2];
+            if (destinationRoom == roomId) {
+              console.log(destinationRoom);
+              var messageContent = splitMessageData[1];
+              var userWhoSent = splitMessageData[3];
+              console.log(messageContent);
+              displayMessage(messageContent);
+            }
+          } else if (splitMessageData[0] == "receivedImage") {
             var destinationRoom = splitMessageData[2]
             if(destinationRoom == roomId) {
-              console.log(destinationRoom)
-              var messageContent = splitMessageData[1]
+              var imageToDisplay = splitMessageData[1]
               var userWhoSent = splitMessageData[3]
-              console.log(messageContent)
-              displayMessage(messageContent)
+              displayImage(userWhoSent, imageToDisplay)
             }
           }
         };
