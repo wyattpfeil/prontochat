@@ -157,7 +157,7 @@ function createSocket() {
           findUrlFromString(messageBoxText).forEach(element => {
               if(element.includes("youtube.com")) {
                 console.log("Found url " + element)
-                sendMessage(username + ": " + messageBoxText);
+                sendMessage(username + ": " + messageBoxText.replace(element, "<a href=" + element + ">" + element + "</a>"));
                 sendYTVideo(element)
               } else if (element.includes("png") ||element.includes("jpg") ||element.includes("jpeg") ||element.includes("gif")) {
                 console.log("Include sit!");
@@ -166,7 +166,6 @@ function createSocket() {
                 sendImage(img);
                 document.getElementById("messageBox").value = "";
               } else {
-                var unlinkedText = element
                 linkedText = replaceAll(linkedText, element, "<a href=" + element + ">" + element + "</a>")
                 console.log("replaced")
               }
@@ -174,6 +173,11 @@ function createSocket() {
           if(linkedText !== messageBoxText) {
             sendMessage(linkedText)
           }
+        } else if (messageBoxText.includes("md:") || messageBoxText.includes("markdown:")) {
+          var markDown = messageBoxText.substring(messageBoxText.indexOf(':') + 1);
+          var converter = new showdown.Converter(),
+            mdHtml      = converter.makeHtml(markDown);
+          sendMessage(username + ": " + mdHtml)
         } else {
           sendMessage(username + ": " + messageBoxText);
         }
