@@ -97,7 +97,12 @@
     <label id="roomCode">Room ID: </label>
     <ul class="list-group" id="messages">
       <li class="list-group-item" id="receivedMessage1">
-        <img id="receivedMessage1Image" width="10%" src="" style="margin-left: 1%;">
+        <img
+          id="receivedMessage1Image"
+          width="10%"
+          src=""
+          style="margin-left: 1%;"
+        />
       </li>
     </ul>
     <form class="form-inline" id="messageForm">
@@ -122,22 +127,22 @@
   <script>
     function readURL(input) {
       if (input.files && input.files[0]) {
-        if((input.files[0].type).includes("image")){
+        if (input.files[0].type.includes("image")) {
           var reader = new FileReader();
           reader.onload = function(e) {
             $("#uploadImageDisplay")
               .attr("src", e.target.result)
               .width(150)
               .height(200);
-            var base64Img = e.target.result
-            messageBox.value = "Uploaded Image"
+            var base64Img = e.target.result;
+            messageBox.value = "Uploaded Image";
             $("#sendButton").trigger("click");
-            messageBox.value = ""
+            messageBox.value = "";
           };
           reader.readAsDataURL(input.files[0]);
-          console.log(input.files[0].type)
+          console.log(input.files[0].type);
         } else {
-          alert("Please upload an image!")
+          alert("Please upload an image!");
         }
       }
     }
@@ -203,7 +208,7 @@
           exampleSocket.send("message|" + message + "|" + roomId);
         }
         function sendImage(image) {
-          exampleSocket.send("image|" + image + "|" + roomId + "|" + username)
+          exampleSocket.send("image|" + image + "|" + roomId + "|" + username);
         }
         function displayMessage(message) {
           var cloneMessage = document
@@ -216,7 +221,7 @@
           messages.appendChild(cloneMessage);
           messages.scrollTop = messages.scrollHeight;
         }
-        function displayImage(userWhoSent, imageSent){
+        function displayImage(userWhoSent, imageSent) {
           var cloneMessage = document
             .getElementById("receivedMessage1")
             .cloneNode(true);
@@ -224,12 +229,14 @@
           var messages = document.getElementById("messages");
           var numberOfMessages = messages.childElementCount;
           cloneMessage.id = "receivedMessage" + numberOfMessages + 1;
-          var cloneImage = document.getElementById("receivedMessage1Image").cloneNode(true)
-          cloneImage.src = imageSent
+          var cloneImage = document
+            .getElementById("receivedMessage1Image")
+            .cloneNode(true);
+          cloneImage.src = imageSent;
           cloneImage.onclick = function() {
-            cloneImage.requestFullscreen()
-          }
-          cloneMessage.appendChild(cloneImage)
+            cloneImage.requestFullscreen();
+          };
+          cloneMessage.appendChild(cloneImage);
           messages.appendChild(cloneMessage);
           messages.scrollTop = messages.scrollHeight;
         }
@@ -237,7 +244,17 @@
           "submit",
           function(e) {
             var messageBoxText = document.getElementById("messageBox").value;
-            if (messageBoxText != "") {
+            if (
+              messageBoxText.includes("png") ||
+              messageBoxText.includes("jpg") ||
+              messageBoxText.includes("jpeg") ||
+              messageBoxText.includes("gif")
+            ) {
+              console.log("Include sit!");
+              var img = messageBoxText;
+              sendImage(img);
+              document.getElementById("messageBox").value = "";
+            } else if (messageBoxText != "") {
               document.getElementById("messageBox").value = "";
               console.log("Sent message " + messageBoxText);
               sendMessage(username + ": " + messageBoxText);
@@ -248,10 +265,20 @@
         );
         document.getElementById("sendButton").onclick = function(e) {
           var messageBoxText = document.getElementById("messageBox").value;
-          if(messageBoxText == "Uploaded Image"){
-            var imgSource = document.getElementById("uploadImageDisplay").src
-            console.log(imgSource)
-            sendImage(imgSource)
+          if (messageBoxText == "Uploaded Image") {
+            var imgSource = document.getElementById("uploadImageDisplay").src;
+            console.log(imgSource);
+            sendImage(imgSource);
+          } else if (
+            messageBoxText.includes("png") ||
+            messageBoxText.includes("jpg") ||
+            messageBoxText.includes("jpeg") ||
+            messageBoxText.includes("gif")
+          ) {
+            console.log("Include sit!");
+            var img = messageBoxText;
+            sendImage(img);
+            document.getElementById("messageBox").value = "";
           } else {
             if (messageBoxText != "") {
               document.getElementById("messageBox").value = "";
@@ -269,10 +296,10 @@
           function(data) {
             var previousMessages = data.split("\n");
             previousMessages.forEach(message => {
-              var splitMessage = message.split("|")
-              if(splitMessage[1]) {
-                if(splitMessage[0] == "image") {
-                  displayImage(splitMessage[2], splitMessage[1])
+              var splitMessage = message.split("|");
+              if (splitMessage[1]) {
+                if (splitMessage[0] == "image") {
+                  displayImage(splitMessage[2], splitMessage[1]);
                 }
               } else {
                 displayMessage(message);
@@ -293,16 +320,87 @@
               displayMessage(messageContent);
             }
           } else if (splitMessageData[0] == "receivedImage") {
-            var destinationRoom = splitMessageData[2]
-            if(destinationRoom == roomId) {
-              var imageToDisplay = splitMessageData[1]
-              var userWhoSent = splitMessageData[3]
-              displayImage(userWhoSent, imageToDisplay)
+            var destinationRoom = splitMessageData[2];
+            if (destinationRoom == roomId) {
+              var imageToDisplay = splitMessageData[1];
+              var userWhoSent = splitMessageData[3];
+              displayImage(userWhoSent, imageToDisplay);
             }
           }
         };
+           function retrieveImageFromClipboardAsBase64(
+      pasteEvent,
+      callback,
+      imageFormat
+    ) {
+      if (pasteEvent.clipboardData == false) {
+        if (typeof callback == "function") {
+          callback(undefined);
+        }
+      }
+
+      var items = pasteEvent.clipboardData.items;
+
+      if (items == undefined) {
+        if (typeof callback == "function") {
+          callback(undefined);
+        }
+      }
+
+      for (var i = 0; i < items.length; i++) {
+        // Skip content if not image
+        if (items[i].type.indexOf("image") == -1) continue;
+        // Retrieve image on clipboard as blob
+        var blob = items[i].getAsFile();
+
+        // Create an abstract canvas and get context
+        var mycanvas = document.createElement("canvas");
+        var ctx = mycanvas.getContext("2d");
+
+        // Create an image
+        var img = new Image();
+
+        // Once the image loads, render the img on the canvas
+        img.onload = function() {
+          // Update dimensions of the canvas with the dimensions of the image
+          mycanvas.width = this.width;
+          mycanvas.height = this.height;
+
+          // Draw the image
+          ctx.drawImage(img, 0, 0);
+
+          // Execute callback with the base64 URI of the image
+          if (typeof callback == "function") {
+            callback(mycanvas.toDataURL(imageFormat || "image/png"));
+          }
+        };
+
+        // Crossbrowser support for URL
+        var URLObj = window.URL || window.webkitURL;
+
+        // Creates a DOMString containing a URL representing the object given in the parameter
+        // namely the original Blob
+        img.src = URLObj.createObjectURL(blob);
+      }
+    }
+    window.addEventListener(
+      "paste",
+      function(e) {
+        // Handle the event
+        retrieveImageFromClipboardAsBase64(e, function(imageDataBase64) {
+          // If there's an image, open it in the browser as a new window :)
+          if (imageDataBase64) {
+            // data:image/png;base64,iVBORw0KGgoAAAAN......
+            //window.open(imageDataBase64);
+            sendImage(imageDataBase64);
+          }
+        });
+      },
+      false
+    );
       };
     }
+ 
     createSocket();
   </script>
 </html>
