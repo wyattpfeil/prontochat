@@ -1,0 +1,132 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+
+<!-- You might want to try something fancier: -->
+<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
+<!-- pug: https://pugjs.org/ -->
+<!-- haml: http://haml.info/ -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ProntoChat</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    />
+    <style>
+      #messageForm {
+        width: 100%;
+        position: fixed;
+        bottom: 2.5%;
+
+        /* And if you want the div to be full-width: */
+        left: 0;
+        right: 0;
+      }
+      #messageBox {
+        width: 100%;
+      }
+      #messageBoxFormGroup {
+        width: 70%;
+        margin: 0 auto;
+        display: block;
+      }
+      #messages {
+        /*width: 100%;*/
+        position: absolute;
+        top: 0%;
+        margin: 0;
+        /* And if you want the div to be full-width: */
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 90%;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      #inviteButton {
+        position: fixed;
+        top: 2%;
+        right: 2%;
+        z-index: 99;
+      }
+      #qrCode {
+        position: fixed;
+        top: 10%;
+        right: 2%;
+        z-index: 100;
+        display: none;
+      }
+      #roomCode {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 101;
+      }
+      #imageInput {
+        position: fixed;
+        top: 0;
+        left: 40%;
+        z-index: 101;
+        opacity: 0;
+      }
+      #sendButton {
+        
+      }
+      #uploadButton {
+        background: transparent;
+        color: rgb(60, 60, 60);
+        border: rgba(0, 0, 0, 0);
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <button class="btn btn-primary" id="inviteButton" type="button">
+      Invite Friends
+    </button>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png"
+      id="qrCode"
+    />
+    <label id="roomCode">Room ID: </label>
+    <ul class="list-group" id="messages">
+      <li class="list-group-item" id="receivedMessage1">
+        <img
+          id="receivedMessage1Image"
+          width="50%"
+          src=""
+          style="margin-left: 1%;"
+        />
+        <iframe width="560" height="315" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="receivedMessage1Iframe"></iframe>
+      </li>
+    </ul>
+    <form class="form-inline" id="messageForm">
+      <button class="btn btn-primary" id="uploadButton" type="button">
+        <i class="fas fa-file-upload fa-2x"></i>
+      </button>
+      <div class="form-group mx-sm-3" id="messageBoxFormGroup">
+        <input
+          type="text"
+          class="form-control"
+          id="messageBox"
+          placeholder="Message"
+        />
+      </div>
+      <button class="btn btn-primary" id="sendButton" type="button">
+        Send
+      </button>
+    </form>
+    <input id="imageInput" type="file" onchange="readURL(this);" />
+    <img id="uploadImageDisplay" src="#" alt="your image" />
+  </body>
+  <script src="client.js" ></script>
+</html>

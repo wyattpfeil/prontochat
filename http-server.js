@@ -3,6 +3,8 @@ let express = require('express');
 let app = express();
 const WebSocket = require('ws');
 // Let's create the regular HTTP request and response
+app.use(express.static('public'))
+
 app.get('/', function(req, res) {
   res.redirect("https://prontochat.glitch.me/join")
 });
@@ -35,8 +37,7 @@ app.get('/room', function(req, res) {
   console.log('Get index');
   var roomId = req.query.roomId
   console.log(roomId)
-  fs.createReadStream('./index.html')
-  .pipe(res);
+  res.sendFile(__dirname + '/public/index.html')
 }); 
 
 
